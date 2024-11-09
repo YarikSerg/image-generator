@@ -1,0 +1,38 @@
+<!-- Сохраняем этот файл как generate_image.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Generator</title>
+    <script src="https://js.puter.com/v2/"></script>
+</head>
+<body>
+    <script>
+        async function generateImage(prompt) {
+            try {
+                const image = await puter.ai.txt2img(prompt, false);
+                return image.src; // URL сгенерированного изображения
+            } catch (error) {
+                console.error("Ошибка генерации:", error);
+                return null;
+            }
+        }
+
+        // Обрабатываем запросы из Telegram-бота
+        async function handleRequest() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const prompt = urlParams.get("prompt");
+            if (prompt) {
+                const imageUrl = await generateImage(prompt);
+                if (imageUrl) {
+                    document.body.innerHTML = `<a href="${imageUrl}">Ссылка на изображение</a>`;
+                } else {
+                    document.body.innerText = "Ошибка при создании изображения.";
+                }
+            }
+        }
+
+        handleRequest();
+    </script>
+</body>
+</html>
